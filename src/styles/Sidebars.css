@@ -1,0 +1,42 @@
+.Sidebar {
+    height: 100%;
+    width: 250px;
+    background-color: cadetblue;
+}
+
+.SidebarList {
+    height: auto;
+    padding: 0;
+    width: 100%;
+}
+
+.SidebarList .row {
+    height: 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.SidebarList .row:hover {
+    cursor: pointer;
+    background-color: darkseagreen;
+}
+
+.row #icon {
+    flex: 30%;
+    display: grid;
+    place-items: center;
+}
+
+.row #icon-active {
+    flex: 30%;
+    display: grid;
+    place-items: center;
+    scale: 110%;
+}
+
+.row #title {
+    flex: 70%;
+}
