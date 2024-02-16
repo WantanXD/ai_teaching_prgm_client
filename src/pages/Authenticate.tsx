@@ -23,11 +23,7 @@ function Authenticate() {
   }
   return (
     <div className="h-screen">
-<<<<<<< HEAD
       <div className="Header">
-=======
-      <div>
->>>>>>> cb52464ceaa78c3ffe5ef52655ff6cc60d2d88a0
         <Header/>
       </div>
       authenticate
