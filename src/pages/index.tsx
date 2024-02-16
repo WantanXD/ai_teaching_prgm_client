@@ -18,6 +18,9 @@ export default function Home() {
       <div>
         <Link href="./Authenticate">あああ</Link>
       </div>
+      <div>
+        <Link href="./InteractiveQandA">しゅつだい</Link>
+      </div>
     </main>
   );
 }
