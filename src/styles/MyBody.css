@@ -1,0 +1,8 @@
+.MyBody {
+    width: 100%;
+    display: flex;
+    margin-left: 60px;
+    margin-top: 50px;
+    background-color: whitesmoke;
+    z-index: 990;
+}
