@@ -5,7 +5,7 @@ function Sidebar() {
 
     const [selectedRow, setSelectedRow] = useState<number | null>(null);
     const handleRowClick = (rowId: number): void => {
-      setSelectedRow((prevId) => (prevId === rowId ? null : rowId));
+      setSelectedRow((prevId) => (prevId === rowId ? prevId : rowId));
     }
     return(
       <div className="Sidebar">
@@ -25,7 +25,6 @@ function Sidebar() {
                     selectedRow === key ? "icon-active" : "icon"
                   }>{value.icon}</div>
                   <div id="title">{value.title}</div>
-                  <div id="debug">{selectedRow}</div>
                 </li>
               )}
             )}

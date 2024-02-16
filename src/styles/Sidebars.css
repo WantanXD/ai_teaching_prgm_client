@@ -1,7 +1,17 @@
 .Sidebar {
     height: 100%;
-    width: 250px;
+    width: 60px;
+    position: fixed;
+    display: flex;
     background-color: cadetblue;
+    flex-direction: column;
+    z-index: 999;
+    top: 50px;
+    transition: width 0.3s ease;
+}
+
+.Sidebar:hover {
+    width :250px;
 }
 
 .SidebarList {
@@ -16,8 +26,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
+
+.row #row-active {
+    cursor: pointer;
+    background-color: darkseagreen;
+}
+
 
 .SidebarList .row:hover {
     cursor: pointer;
@@ -26,17 +41,23 @@
 
 .row #icon {
     flex: 30%;
+    margin-left: 15px;
     display: grid;
     place-items: center;
 }
 
-.row #icon-active {
+.Sidebar:hover .row #icon {
     flex: 30%;
     display: grid;
     place-items: center;
-    scale: 110%;
 }
 
 .row #title {
     flex: 70%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.Sidebar:hover .row #title {
+    opacity: 1;
 }

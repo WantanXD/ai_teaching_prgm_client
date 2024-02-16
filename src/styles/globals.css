@@ -1,4 +1,6 @@
 @import './Sidebars.css';
+@import './Header.css';
+@import './MyBody.css';
 
 @tailwind base;
 @tailwind components;

@@ -23,7 +23,7 @@ function Authenticate() {
   }
   return (
     <div className="h-screen">
-      <div>
+      <div className="Header">
         <Header/>
       </div>
       authenticate
