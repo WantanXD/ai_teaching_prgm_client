@@ -25,6 +25,9 @@ export default function Home() {
           </NextLink>
         </div>
       </div>
+      <div>
+        <Link href="./InteractiveQandA">しゅつだい</Link>
+      </div>
     </main>
   );
 }
