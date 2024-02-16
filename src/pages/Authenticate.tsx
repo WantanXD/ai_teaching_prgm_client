@@ -1,6 +1,7 @@
 import { apiClient } from '@/lib/apiClient';
 import React from 'react'
 import {useRef} from "react"
+import Header from "@/components/Header";
 
 function Authenticate() {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -22,6 +23,9 @@ function Authenticate() {
   }
   return (
     <div className="h-screen">
+      <div>
+        <Header/>
+      </div>
       authenticate
       <form onSubmit={handleSubmit}>
         <input type="text" name="name" placeholder='名前を入力' ref={nameRef}/>
