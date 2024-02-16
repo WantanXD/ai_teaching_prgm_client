@@ -9,14 +9,14 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   return (
     <main className="h-screen">
-      <div className="h-30">
+      <div className="Header">
         <Header/>
       </div>
-      <div className="h-full">
+      <div className="MainContainer h-full flex">
         <Sidebar/>
-      </div>
-      <div>
-        <Link href="./Authenticate">あああ</Link>
+        <div className="MyBody">
+          <Link className="Authenticate" href="./Authenticate">あああ</Link>
+        </div>
       </div>
     </main>
   );
