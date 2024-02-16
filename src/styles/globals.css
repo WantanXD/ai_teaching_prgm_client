@@ -1,6 +1,7 @@
 @import './Sidebars.css';
 @import './Header.css';
 @import './MyBody.css';
+@import './StartButton.css';
 
 @tailwind base;
 @tailwind components;
