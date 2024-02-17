@@ -4,7 +4,7 @@ import { apiClient } from '@/lib/apiClient';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 
-const interactiveQandA = () => {
+const InteractiveQandA = () => {
 
   const [question, setQuestion] = useState<string | null>(null);
   const [count, setCount] = useState<number>(0);
@@ -99,4 +99,4 @@ const interactiveQandA = () => {
   )
 }
 
-export default interactiveQandA
+export default InteractiveQandA
