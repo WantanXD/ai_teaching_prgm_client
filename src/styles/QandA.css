@@ -1,0 +1,18 @@
+.QandABody {
+    width: 40%;
+    position: absolute;
+    left: 5%;
+    top: 8%;
+}
+
+.DescBody {
+    width: 40%;
+    position: absolute;
+    left: 55%;
+    top: 8%;
+}
+
+.Answer-text {
+    width: 90%;
+    resize: none;
+}

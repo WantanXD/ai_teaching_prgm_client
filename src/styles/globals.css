@@ -2,6 +2,7 @@
 @import './Header.css';
 @import './MyBody.css';
 @import './StartButton.css';
+@import './QandA.css';
 
 @tailwind base;
 @tailwind components;
