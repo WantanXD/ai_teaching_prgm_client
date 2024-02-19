@@ -1,25 +1,29 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import { apiClient } from '@/lib/apiClient';
+import { Button } from '@mui/material';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import CodeBlock from '@/components/CodeBlock';
+import NextLink from "next/link";
 
 const InteractiveQandA = () => {
 
   const [question, setQuestion] = useState<string | null>(null);
   const [modelAnswer, setModelAnswer] = useState<string | null>(null);
-  const [count, setCount] = useState<number>(0);
   const [tof, setTof] = useState<string | null>(null);
   const [comments, setComments] = useState<Array<string>>([]);
-  const answerRef = useRef<HTMLTextAreaElement | null>(null);
   const [isSendAnswer, setIsSendAnswer] = useState<boolean>(false);
-  const programmingLang = "java";
+  const [questionCount, setQuestionCount] = useState<number>(0);
+  const [isFillTextArea, setIsFillTextArea] = useState<boolean>(false);
+  const answerRef = useRef<HTMLTextAreaElement | null>(null);
+  const searchParams = useSearchParams();
+  const programmingLang = searchParams.get("pl");
 
   const initStatus = () => {
     setIsSendAnswer(false);
     setQuestion(null);
-    setCount(0);
     setTof(null);
     setComments([]);
   }
@@ -33,11 +37,6 @@ const InteractiveQandA = () => {
       setQuestion(responce.data.returnData.question);
       setModelAnswer(responce.data.returnData.modelAnswer);
     })
-  };
-
-  const countUp = () => {
-    const now = count;
-    setCount(now + 1);
   };
 
   const hundleSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
@@ -60,14 +59,19 @@ const InteractiveQandA = () => {
     }
   };
 
-  useEffect(() => {
+  const handleReload = () => {
     initStatus();
-    generateQuestion();
-  }, []);
+    const now = questionCount;
+    setQuestionCount(now + 1);
+  }
 
   useEffect(() => {
-    countUp();
-  }, [question]);
+    generateQuestion();
+  }, [questionCount]);
+
+  const changeWord = () => {
+    setIsFillTextArea(answerRef.current !== null && answerRef.current?.value !== "" ? true : false);
+  }
 
   return (
     <div className='interactiveQandA h-screen'>
@@ -95,13 +99,15 @@ const InteractiveQandA = () => {
             <div className="Answer">
               <h2>解答を入力</h2>
               <form onSubmit={hundleSubmit}>
-                <textarea className="Answer-text" rows={8} name="answer" ref={answerRef}/>
-                {isSendAnswer === false && (<input type="submit" value="解答"/>)}
+                <textarea className="Answer-text" rows={8} name="answer" onChange={changeWord} ref={answerRef}/>
+                {isSendAnswer === false && isFillTextArea === true && (
+                  <input type="submit" value="解答"/>
+                )}
               </form>
             </div>
           )}
-        </div>
-        <div className="DescBody">
+          </div>
+          <div className="DescBody">
           {tof !== null && comments[0] !== "" && (
             <div className="Description">
               <p>{tof === 'Y' ? "正解" : "不正解"}</p>
@@ -123,6 +129,16 @@ const InteractiveQandA = () => {
             </div>
           )}
           </div>
+          <div>
+            <NextLink href="/" passHref>
+              <Button className="BackButton" variant="outlined" color="warning">もどる</Button>
+            </NextLink>
+          </div>
+          {tof !== null && comments[0] !== "" && (
+            <div className="">
+              <Button className="NextButton" variant="contained" color="success" onClick={handleReload}>次の問題</Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
