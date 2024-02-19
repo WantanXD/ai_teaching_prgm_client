@@ -12,6 +12,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
 
+  let programmingLang = "javascript";
+
   return (
     <main className="h-screen">
       <div className="Header">
@@ -20,8 +22,13 @@ export default function Home() {
       <div className="MainContainer h-full flex">
         <Sidebar/>
         <div className="MyBody">
-          <NextLink href="./InteractiveQandA" passHref>
-            <Button className="StartButton" variant='outlined'>問題を解く</Button>
+          <NextLink 
+            href={{
+              pathname: "./InteractiveQandA", 
+              query : { pl : programmingLang }
+            }}
+            as="" passHref>
+            <Button className="StartButton" variant='outlined' size="large">問題を解く</Button>
           </NextLink>
         </div>
       </div>
