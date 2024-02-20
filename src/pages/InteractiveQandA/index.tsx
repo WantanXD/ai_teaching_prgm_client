@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import { apiClient } from '@/lib/apiClient';
 import { Button } from '@mui/material';
@@ -18,8 +17,7 @@ const InteractiveQandA = () => {
   const [questionCount, setQuestionCount] = useState<number>(0);
   const [isFillTextArea, setIsFillTextArea] = useState<boolean>(false);
   const answerRef = useRef<HTMLTextAreaElement | null>(null);
-  const searchParams = useSearchParams();
-  const programmingLang = searchParams.get("pl");
+  const programmingLang = localStorage.getItem("pl");
 
   const initStatus = () => {
     setIsSendAnswer(false);

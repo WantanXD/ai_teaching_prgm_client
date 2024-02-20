@@ -1,9 +1,10 @@
 import Image from "next/image";
+import React, { useEffect, useState } from 'react';
 import { Inter } from "next/font/google";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import NextLink from "next/link";
-import {Button, Link as MuiLink} from "@mui/material/";
+import {Button, Link as MuiLink, FormControl, InputLabel, Select, MenuItem} from "@mui/material/";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,7 +13,26 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
 
-  let programmingLang = "javascript";
+  const programmingLangs: { [key : string] : string } = {
+    'Java' : 'java',
+    'C言語' : 'c',
+    'JavaScript' : 'javascript'
+  };
+  let selectedLang:string = programmingLangs[0];
+
+  useEffect(() => {
+    if (localStorage.getItem('pl') !== null) {
+      const storedLang = localStorage.getItem('pl');
+      selectedLang = (storedLang !== null ? storedLang : selectedLang);
+    }
+    console.log(selectedLang);
+  }, [])
+
+  const handleSelectLang = (e:any) => {
+    selectedLang = e.target.value;
+    localStorage.setItem('pl', selectedLang);
+    console.log(selectedLang);
+  }
 
   return (
     <main className="h-screen">
@@ -22,12 +42,27 @@ export default function Home() {
       <div className="MainContainer h-full flex">
         <Sidebar/>
         <div className="MyBody">
+          <div className="selectLanguage">
+            <FormControl fullWidth>
+              <InputLabel id="laguage-select-label">言語を選択</InputLabel>
+              <Select
+                labelId="language-select-label"
+                id="language-select"
+                value={selectedLang}
+                label="selectLang"
+                onChange={handleSelectLang}
+              >
+                {Object.keys(programmingLangs).map((lang, index) => (
+                    <MenuItem
+                      value={programmingLangs[lang]}
+                      selected={programmingLangs[lang] === selectedLang}
+                    >{lang}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
           <NextLink 
-            href={{
-              pathname: "./InteractiveQandA", 
-              query : { pl : programmingLang }
-            }}
-            as="" passHref>
+            href={"./InteractiveQandA"} as="" passHref>
             <Button className="StartButton" variant='outlined' size="large">問題を解く</Button>
           </NextLink>
         </div>
