@@ -42,8 +42,11 @@ export default function Home() {
       <div className="MainContainer h-full flex">
         <Sidebar/>
         <div className="MyBody">
-          <div className="selectLanguage">
-            <FormControl fullWidth>
+          <div className="SelectLanguageText">
+            出題言語:
+          </div>
+          <div>
+            <FormControl className="SelectLanguage">
               <InputLabel id="laguage-select-label">言語を選択</InputLabel>
               <Select
                 labelId="language-select-label"

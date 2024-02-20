@@ -17,7 +17,7 @@ const InteractiveQandA = () => {
   const [questionCount, setQuestionCount] = useState<number>(0);
   const [isFillTextArea, setIsFillTextArea] = useState<boolean>(false);
   const answerRef = useRef<HTMLTextAreaElement | null>(null);
-  const programmingLang = localStorage.getItem("pl");
+  const [programmingLang, setProgrammingLang] = useState<string>('javascript');
 
   const initStatus = () => {
     setIsSendAnswer(false);
@@ -64,6 +64,14 @@ const InteractiveQandA = () => {
   }
 
   useEffect(() => {
+    if (localStorage.getItem('pl') === null) {
+      setProgrammingLang('javascript');
+    }else {
+      const storedLang = localStorage.getItem('pl');
+      setProgrammingLang(storedLang !== null ? storedLang : programmingLang);
+    }
+    console.log(programmingLang);
+
     generateQuestion();
   }, [questionCount]);
 
