@@ -17,7 +17,7 @@ function Authenticate() {
       email, 
       pass:password,
     }).then((response:any)=>{
-      console.log(response.data)
+      console.log(response.data);
     })
 
   }

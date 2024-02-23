@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef, useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { apiClient } from '@/lib/apiClient';
@@ -63,14 +65,20 @@ const InteractiveQandA = () => {
     setQuestionCount(now + 1);
   }
 
+  const handleBackPage = () => {
+    localStorage.removeItem('pl');
+  }
+
   useEffect(() => {
     if (localStorage.getItem('pl') === null) {
       setProgrammingLang('javascript');
     }else {
       const storedLang = localStorage.getItem('pl');
       setProgrammingLang(storedLang !== null ? storedLang : programmingLang);
+      console.log("storedLang=" + storedLang);
     }
-    console.log(programmingLang);
+    console.log("pl=" + programmingLang);
+    console.log("pl(localStorage)=" + localStorage.getItem("pl"));
 
     generateQuestion();
   }, [questionCount]);
@@ -137,7 +145,7 @@ const InteractiveQandA = () => {
           </div>
           <div>
             <NextLink href="/" passHref>
-              <Button className="BackButton" variant="outlined" color="warning">もどる</Button>
+              <Button className="BackButton" variant="outlined" color="warning" onClick={handleBackPage}>もどる</Button>
             </NextLink>
           </div>
           {tof !== null && comments[0] !== "" && (
