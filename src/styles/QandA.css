@@ -1,8 +1,10 @@
 .QandABody {
     width: 40%;
+    max-height: 75%;
     position: absolute;
     left: 5%;
     top: 8%;
+    overflow: auto;
 }
 
 .DescBody {

@@ -11,6 +11,7 @@ import NextLink from "next/link";
 
 const InteractiveQandA = () => {
 
+  const [programmingLang, setProgrammingLang] = useState<string>('');
   const [question, setQuestion] = useState<string | null>(null);
   const [modelAnswer, setModelAnswer] = useState<string | null>(null);
   const [tof, setTof] = useState<string | null>(null);
@@ -19,13 +20,14 @@ const InteractiveQandA = () => {
   const [questionCount, setQuestionCount] = useState<number>(0);
   const [isFillTextArea, setIsFillTextArea] = useState<boolean>(false);
   const answerRef = useRef<HTMLTextAreaElement | null>(null);
-  const [programmingLang, setProgrammingLang] = useState<string>('javascript');
+  let generateQuestionLock : boolean = false;
 
   const initStatus = () => {
     setIsSendAnswer(false);
     setQuestion(null);
     setTof(null);
     setComments([]);
+    generateQuestionLock = false;
   }
 
   const generateQuestion = async() => {
@@ -66,22 +68,37 @@ const InteractiveQandA = () => {
   }
 
   const handleBackPage = () => {
-    localStorage.removeItem('pl');
+    //localStorage.removeItem('pl');
   }
 
   useEffect(() => {
-    if (localStorage.getItem('pl') === null) {
-      setProgrammingLang('javascript');
-    }else {
-      const storedLang = localStorage.getItem('pl');
-      setProgrammingLang(storedLang !== null ? storedLang : programmingLang);
-      console.log("storedLang=" + storedLang);
+
+    const loadPlFromLocalStorage = () => {
+
+      let newProgrammingLang;
+      if (localStorage.getItem('pl') === null) {
+        newProgrammingLang = 'java';
+      }else {
+        const storedLang = localStorage.getItem('pl');
+        newProgrammingLang = storedLang !== null ? storedLang : programmingLang;
+      }
+
+      setProgrammingLang(newProgrammingLang);
     }
+
+    loadPlFromLocalStorage();
+  }, []);
+
+  useEffect(() => {
+  
     console.log("pl=" + programmingLang);
     console.log("pl(localStorage)=" + localStorage.getItem("pl"));
 
-    generateQuestion();
-  }, [questionCount]);
+    if (programmingLang !== '' && !generateQuestionLock) {
+      generateQuestion();
+      generateQuestionLock = true;
+    }
+  }, [programmingLang, questionCount])
 
   const changeWord = () => {
     setIsFillTextArea(answerRef.current !== null && answerRef.current?.value !== "" ? true : false);

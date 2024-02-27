@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import NextLink from "next/link";
-import {Button, Link as MuiLink, FormControl, InputLabel, Select, MenuItem} from "@mui/material/";
+import {Button, Link as MuiLink, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent} from "@mui/material/";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,21 +18,24 @@ export default function Home() {
     'C言語' : 'c',
     'JavaScript' : 'javascript'
   };
-  let selectedLang:string = programmingLangs[0];
+  const [selectedLang, setSelectedLang] = useState<string>(programmingLangs['Java']);
 
   useEffect(() => {
     if (localStorage.getItem('pl') !== null) {
       const storedLang = localStorage.getItem('pl');
-      selectedLang = (storedLang !== null ? storedLang : selectedLang);
+      setSelectedLang(storedLang !== null ? storedLang : selectedLang);
     }
     console.log(selectedLang);
   }, [])
 
-  const handleSelectLang = (e:any) => {
-    selectedLang = e.target.value;
+  const handleSelectLang = (e:SelectChangeEvent<string>) => {
+    setSelectedLang(e.target.value);
+  }
+
+  useEffect(() => {
     localStorage.setItem('pl', selectedLang);
     console.log(selectedLang);
-  }
+  }, [selectedLang]);
 
   return (
     <main className="h-screen">
@@ -57,8 +60,8 @@ export default function Home() {
               >
                 {Object.keys(programmingLangs).map((lang, index) => (
                     <MenuItem
+                      key={index}
                       value={programmingLangs[lang]}
-                      selected={programmingLangs[lang] === selectedLang}
                     >{lang}</MenuItem>
                 ))}
               </Select>
