@@ -13,12 +13,14 @@ const InteractiveQandA = () => {
 
   const [programmingLang, setProgrammingLang] = useState<string>('');
   const [question, setQuestion] = useState<string | null>(null);
+  const [answer, setAnswer] = useState<String | null>(null);
   const [modelAnswer, setModelAnswer] = useState<string | null>(null);
   const [tof, setTof] = useState<string | null>(null);
   const [comments, setComments] = useState<Array<string>>([]);
   const [isSendAnswer, setIsSendAnswer] = useState<boolean>(false);
   const [questionCount, setQuestionCount] = useState<number>(0);
   const [isFillTextArea, setIsFillTextArea] = useState<boolean>(false);
+  const [loginUserId, setLoginUserId] = useState<number|null>();
   const answerRef = useRef<HTMLTextAreaElement | null>(null);
   let generateQuestionLock : boolean = false;
 
@@ -45,7 +47,7 @@ const InteractiveQandA = () => {
     e.preventDefault();
     if (isSendAnswer === false) {
       setIsSendAnswer(true);  // 2回目のsubmitを無効化する
-      const answer = answerRef.current !== null ? answerRef.current?.value : "";
+      setAnswer(answerRef.current !== null ? answerRef.current?.value : "");
       if (answer !== "") {
         await apiClient.post("gemini/answerCheck", {
           question,
@@ -61,7 +63,20 @@ const InteractiveQandA = () => {
     }
   };
 
-  const handleReload = () => {
+  const handleReload = async() => {
+    if (loginUserId !== null) {
+      await apiClient.post("db/QandARegister", {
+        question,
+        answer,
+        modelAnswer,
+        tof,
+        comment: comments.slice(1).join('\n'),
+        lang: programmingLang,
+        userId: loginUserId
+       }).then((response:any) => {
+        console.log(response);
+       });
+    }
     initStatus();
     const now = questionCount;
     setQuestionCount(now + 1);
@@ -87,6 +102,8 @@ const InteractiveQandA = () => {
     }
 
     loadPlFromLocalStorage();
+    const userId = Number(localStorage.getItem('loginUserId'));
+    setLoginUserId(userId);
   }, []);
 
   useEffect(() => {
@@ -141,10 +158,10 @@ const InteractiveQandA = () => {
           <div className="DescBody">
           {tof !== null && comments[0] !== "" && (
             <div className="Description">
-              <p>{tof === 'Y' ? "正解" : "不正解"}</p>
+              <p>{tof === 'Apple' ? "正解" : "不正解"}</p>
               {comments.map((comment, index) => (
                 <React.Fragment key={index}>
-                {comment !== 'Y' && comment !== 'Great' ? 
+                {comment !== 'Apple' && comment !== 'Grape' && comment !== 'Orange' ? 
                   (comment.split("```").map((sentence, i) => (
                     <React.Fragment key={i}>
                     {i % 2 === 0 ? 

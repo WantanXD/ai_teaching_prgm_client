@@ -1,0 +1,36 @@
+.LoginSuggestButton {
+  position: absolute;
+  top: 50%;
+  left: 48%;  
+}
+
+.LogTitle {
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  width: 90%;
+  height: 5%;
+  background-color: #3498db;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LogLangBody-Corner {
+  position: absolute;
+  top: 25%;
+  left: 10%;
+  width: 30%;
+  height: 30%;
+  justify-content: center;
+  align-items: center;
+}
+.LogLangBody {
+  background-color: white;
+  border-radius: 20px;
+  border: 2px solid #2980b9;
+}
