@@ -20,10 +20,26 @@
   justify-content: center;
 }
 
+.LogSubTitle {
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  width: 90%;
+  height: 10%;
+  background-color: #3498db;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .LogLangBody-Corner {
   position: absolute;
   top: 25%;
-  left: 10%;
+  left: 15%;
   width: 30%;
   height: 30%;
   justify-content: center;
@@ -33,4 +49,63 @@
   background-color: white;
   border-radius: 20px;
   border: 2px solid #2980b9;
+  display: flex;
+}
+.LogLangBody .logCircle {
+  position: relative;
+  display: flex;
+  height: 30vh;
+  width: 30vh;
+  margin-top: 50px;
+  padding: 20px;
+}
+.LogLangBody .logCircleLabels {
+  position: relative;
+  display: flex;
+  margin-top: 50px;
+  padding-top: 10%;
+  padding-left: 5%;
+  flex-direction: column;
+}
+.LogLangBody .logCircleLabels .label {
+  display: flex;
+  padding-bottom: 5%;
+}
+.LogLangBody .logCircleLabels .labelTitle {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+}
+.LogLangBody .logCircleLabels .labelSquare {
+  position: relative;
+  display: flex;
+  height: 1.5vh;
+  width: 3vh;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.LogTofBody-Corner {
+  position: absolute;
+  top: 25%;
+  right: 15%;
+  width: 30%;
+  height: 30%;
+  justify-content: center;
+  align-items: center;
+}
+.LogTofBody {
+  background-color: white;
+  border-radius: 20px;
+  border: 2px solid #2980b9;
+  display: flex;
+}
+.LogTofBody .logCircle {
+  position: relative;
+  display: flex;
+  height: 30vh;
+  width: 30vh;
+  padding: 20px;
 }

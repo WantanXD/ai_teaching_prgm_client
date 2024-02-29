@@ -16,8 +16,10 @@ const InteractiveQandA = () => {
   const [answer, setAnswer] = useState<String | null>(null);
   const [modelAnswer, setModelAnswer] = useState<string | null>(null);
   const [tof, setTof] = useState<string | null>(null);
+  const [reason, setReason] = useState<String | null>(null);
   const [comments, setComments] = useState<Array<string>>([]);
   const [isSendAnswer, setIsSendAnswer] = useState<boolean>(false);
+  const [isGetAnswer, setIsGetAnswer] = useState<boolean>(false);
   const [questionCount, setQuestionCount] = useState<number>(0);
   const [isFillTextArea, setIsFillTextArea] = useState<boolean>(false);
   const [loginUserId, setLoginUserId] = useState<number|null>();
@@ -28,7 +30,9 @@ const InteractiveQandA = () => {
     setIsSendAnswer(false);
     setQuestion(null);
     setTof(null);
+    setReason(null);
     setComments([]);
+    setIsGetAnswer(false);
     generateQuestionLock = false;
   }
 
@@ -48,20 +52,34 @@ const InteractiveQandA = () => {
     if (isSendAnswer === false) {
       setIsSendAnswer(true);  // 2回目のsubmitを無効化する
       setAnswer(answerRef.current !== null ? answerRef.current?.value : "");
-      if (answer !== "") {
+      console.log("answer set.");
+    }
+  };
+
+  useEffect(() => {
+
+    console.log("answer is : " + answer);
+    console.log("isGetAnswer : " + isGetAnswer);
+    const answerCheck = async() => {
+      if (answer !== "" && answer !== null && isGetAnswer === false) {
         await apiClient.post("gemini/answerCheck", {
           question,
           answer,
           modelAnswer,
           pl: programmingLang
-        }).then((responce:any) => {
-          setTof(responce.data.returnData.tof);
-          const resComments = Object.keys(responce.data.returnData).map((key :string) => responce.data.returnData[key]);  // 複数あるコメントを任意の数記録
+        }).then((response:any) => {
+          setTof(response.data.returnData.tof);
+          setReason(response.data.returnData.reasons);
+          const resComments = Object.keys(response.data.returnData).map((key :string) => response.data.returnData[key]);  // 複数あるコメントを任意の数記録
           setComments(resComments);
+          setIsGetAnswer(true);
         })
       }
     }
-  };
+    answerCheck();
+    console.log(reason);
+    
+  }, [answer])
 
   const handleReload = async() => {
     if (loginUserId !== null) {
@@ -156,7 +174,7 @@ const InteractiveQandA = () => {
           )}
           </div>
           <div className="DescBody">
-          {tof !== null && comments[0] !== "" && (
+          {isGetAnswer === true && tof !== null && (
             <div className="Description">
               <p>{tof === 'Apple' ? "正解" : "不正解"}</p>
               {comments.map((comment, index) => (
