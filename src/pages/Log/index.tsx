@@ -177,6 +177,11 @@ function Log() {
                       <div className='LogSubTitle'>
                         正答数比率
                       </div>
+                      <div className='LogTofLabelTitle'>
+                        {
+                          
+                        }
+                      </div>
                     </React.Fragment>
                   )}
                 </div>
