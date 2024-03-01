@@ -102,10 +102,11 @@
   border: 2px solid #2980b9;
   display: flex;
 }
-.LogTofBody .logCircle {
+.LogTofBody .logBar {
   position: relative;
   display: flex;
   height: 30vh;
-  width: 30vh;
+  width: 90vh;
   padding: 20px;
+  margin-top: 50px;
 }

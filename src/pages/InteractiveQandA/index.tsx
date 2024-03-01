@@ -25,6 +25,22 @@ const InteractiveQandA = () => {
   const [loginUserId, setLoginUserId] = useState<number|null>();
   const answerRef = useRef<HTMLTextAreaElement | null>(null);
   let generateQuestionLock : boolean = false;
+  const programmingLangs: { [key : string] : string } = {
+    'Java' : 'java',
+    'C言語' : 'c',
+    'C++' : 'c++',
+    'JavaScript' : 'javascript',
+    'Python' : 'python',
+    'Go' : 'go',
+    'C#' : 'cs',
+    'Ruby' : 'rb',
+    'SQL' : 'sql',
+    'PHP' : 'php',
+    'ShellScript' : 'sh',
+  };
+  const findKeyByValue = (obj: Object, e: string) => {
+    return Object.keys(programmingLangs).find(key => programmingLangs[key] === e);
+  }
 
   const initStatus = () => {
     setIsSendAnswer(false);
@@ -38,7 +54,7 @@ const InteractiveQandA = () => {
 
   const generateQuestion = async() => {
     await apiClient.post("/gemini/generateQuestion", {
-      pl:programmingLang
+      pl:findKeyByValue(programmingLangs, programmingLang)
     }).then((responce: any) => {
       console.log(responce.data.returnData.question);
       console.log(responce.data.returnData.modelAnswer);
@@ -59,14 +75,13 @@ const InteractiveQandA = () => {
   useEffect(() => {
 
     console.log("answer is : " + answer);
-    console.log("isGetAnswer : " + isGetAnswer);
     const answerCheck = async() => {
       if (answer !== "" && answer !== null && isGetAnswer === false) {
         await apiClient.post("gemini/answerCheck", {
           question,
           answer,
           modelAnswer,
-          pl: programmingLang
+          pl:findKeyByValue(programmingLangs, programmingLang)
         }).then((response:any) => {
           setTof(response.data.returnData.tof);
           setReason(response.data.returnData.reasons);
@@ -77,7 +92,6 @@ const InteractiveQandA = () => {
       }
     }
     answerCheck();
-    console.log(reason);
     
   }, [answer])
 
@@ -176,7 +190,7 @@ const InteractiveQandA = () => {
           <div className="DescBody">
           {isGetAnswer === true && tof !== null && (
             <div className="Description">
-              <p>{tof === 'Apple' ? "正解" : "不正解"}</p>
+              <p>{tof == 'Apple' ? "正解" : "不正解"}</p>
               {comments.map((comment, index) => (
                 <React.Fragment key={index}>
                 {comment !== 'Apple' && comment !== 'Grape' && comment !== 'Orange' ? 
@@ -200,7 +214,7 @@ const InteractiveQandA = () => {
               <Button className="BackButton" variant="outlined" color="warning" onClick={handleBackPage}>もどる</Button>
             </NextLink>
           </div>
-          {tof !== null && comments[0] !== "" && (
+          {tof !== null && (
             <div className="">
               <Button className="NextButton" variant="contained" color="success" onClick={handleReload}>次の問題</Button>
             </div>

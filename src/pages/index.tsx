@@ -15,8 +15,16 @@ export default function Home() {
 
   const programmingLangs: { [key : string] : string } = {
     'Java' : 'java',
+    'C言語' : 'c',
     'C++' : 'c++',
-    'JavaScript' : 'javascript'
+    'JavaScript' : 'javascript',
+    'Python' : 'python',
+    'Go' : 'go',
+    'C#' : 'cs',
+    'Ruby' : 'rb',
+    'SQL' : 'sql',
+    'PHP' : 'php',
+    'ShellScript' : 'sh',
   };
   const [selectedLang, setSelectedLang] = useState<string>(programmingLangs['Java']);
 
