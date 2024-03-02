@@ -239,7 +239,7 @@ function Log() {
                   {loginUser !== null && loginUser !== '' && (
                     <React.Fragment>
                       <div className='LogSubTitle'>
-                        解答数ランキング
+                        解答数比較
                       </div>
                     {circleGraphData !== null && (
                       <div className='logCircle'>
@@ -296,6 +296,20 @@ function Log() {
                           </React.Fragment>
                         </div>
                       )}
+                    </React.Fragment>
+                  )}
+                </div>
+              </div>
+              <div className='logDataBody-Corner'>
+                <div className='logDataBody'>
+                  {loginUser !== null && loginUser !== '' && (
+                    <React.Fragment>
+                      <div className='LogSubTitle'>
+                        履歴
+                      </div>
+                      <div>
+                        あ
+                      </div>
                     </React.Fragment>
                   )}
                 </div>

@@ -4,7 +4,15 @@
     position: absolute;
     left: 5%;
     top: 8%;
-    overflow: auto;
+    overflow-y: auto;
+}
+.QandABody::-webkit-scrollbar {
+    background-color: rgb(238, 238, 238);
+    width: 7px;
+}
+.QandABody::-webkit-scrollbar-thumb {
+    background-color: #2980b9;
+    border-radius: 20px;
 }
 
 .DescBody {
@@ -13,7 +21,15 @@
     position: absolute;
     left: 50%;
     top: 8%;
-    overflow: auto;
+    overflow-y: auto;
+}
+.DescBody::-webkit-scrollbar {
+    background-color: rgb(238, 238, 238);
+    width: 7px;
+}
+.DescBody::-webkit-scrollbar-thumb {
+    background-color: #2980b9;
+    border-radius: 20px;
 }
 
 .Answer-text {

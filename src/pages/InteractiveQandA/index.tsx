@@ -16,7 +16,7 @@ const InteractiveQandA = () => {
   const [answer, setAnswer] = useState<String | null>(null);
   const [modelAnswer, setModelAnswer] = useState<string | null>(null);
   const [tof, setTof] = useState<string | null>(null);
-  const [reason, setReason] = useState<String | null>(null);
+  const [reason, setReason] = useState<string | null>(null);
   const [comments, setComments] = useState<Array<string>>([]);
   const [isSendAnswer, setIsSendAnswer] = useState<boolean>(false);
   const [isGetAnswer, setIsGetAnswer] = useState<boolean>(false);
@@ -85,7 +85,7 @@ const InteractiveQandA = () => {
         }).then((response:any) => {
           setTof(response.data.returnData.tof);
           setReason(response.data.returnData.reasons);
-          const resComments = Object.keys(response.data.returnData).map((key :string) => response.data.returnData[key]);  // 複数あるコメントを任意の数記録
+          const resComments = Object.keys(response.data.returnData).filter((key: string) => key.startsWith("comment")).map((key :string) => response.data.returnData[key]);  // 複数あるコメントを任意の数記録
           setComments(resComments);
           setIsGetAnswer(true);
         })
@@ -102,6 +102,7 @@ const InteractiveQandA = () => {
         answer,
         modelAnswer,
         tof,
+        reasons: reason,
         comment: comments.slice(1).join('\n'),
         lang: programmingLang,
         userId: loginUserId
@@ -190,7 +191,8 @@ const InteractiveQandA = () => {
           <div className="DescBody">
           {isGetAnswer === true && tof !== null && (
             <div className="Description">
-              <p>{tof == 'Apple' ? "正解" : "不正解"}</p>
+              <p><b>{tof === 'Apple' ? "正解" : "不正解"}</b></p>
+              {reason !== null && reason !== '' && (<ReactMarkdown className="bg-red-100 border-red-400 text-red-700 border rounded-md p-4 mb-4">{reason}</ReactMarkdown>)}
               {comments.map((comment, index) => (
                 <React.Fragment key={index}>
                 {comment !== 'Apple' && comment !== 'Grape' && comment !== 'Orange' ? 
