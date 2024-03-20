@@ -80,6 +80,7 @@ function Log() {
   const [loginUserId, setLoginUserId] = useState<number|null>();
   const [circleGraphData, setCircleGraphData] = useState(initCircleGraphData);
   const [barGraphData, setBarGraphData] = useState(initBarGraphData);
+  const [historyData, setHistoryData] = useState(null);
   const [langPercentage, setLangPercentage] = useState<number>(-1);
 
   let langRate:any = null;
@@ -135,6 +136,13 @@ function Log() {
 
     return trueRate;
   };
+  const makeHistoryData = async() => {
+    await apiClient.post('db/getHistory', {
+      userId: loginUserId,
+    }).then((responce:any) => {
+      
+    });
+  }
 
   useEffect(() => {
     console.log(langPercentage);
@@ -205,7 +213,9 @@ function Log() {
             },
           ],
         })
-      })
+      });
+
+
     };
   }, [loginUserId])
 
@@ -307,9 +317,13 @@ function Log() {
                       <div className='LogSubTitle'>
                         履歴
                       </div>
-                      <div>
-                        あ
-                      </div>
+                      {historyData !== null && (
+                        <div className='LogHistoryData'>
+                          {
+
+                          }
+                        </div>
+                      )}
                     </React.Fragment>
                   )}
                 </div>
