@@ -139,6 +139,7 @@ function Log() {
   const makeHistoryData = async() => {
     await apiClient.post('db/getHistory', {
       userId: loginUserId,
+      limit: 5,
     }).then((responce:any) => {
       setHistoryData(cvrtLangName(responce.data.returnData));
     });
