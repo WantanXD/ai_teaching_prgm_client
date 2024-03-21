@@ -140,7 +140,7 @@ function Log() {
     await apiClient.post('db/getHistory', {
       userId: loginUserId,
     }).then((responce:any) => {
-      
+      setHistoryData(cvrtLangName(responce.data.returnData));
     });
   }
 
@@ -214,8 +214,7 @@ function Log() {
           ],
         })
       });
-
-
+      makeHistoryData();
     };
   }, [loginUserId])
 
