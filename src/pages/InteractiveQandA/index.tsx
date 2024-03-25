@@ -13,26 +13,48 @@ const InteractiveQandA = () => {
 
   const [programmingLang, setProgrammingLang] = useState<string>('');
   const [question, setQuestion] = useState<string | null>(null);
+  const [answer, setAnswer] = useState<String | null>(null);
   const [modelAnswer, setModelAnswer] = useState<string | null>(null);
   const [tof, setTof] = useState<string | null>(null);
+  const [reason, setReason] = useState<string | null>(null);
   const [comments, setComments] = useState<Array<string>>([]);
   const [isSendAnswer, setIsSendAnswer] = useState<boolean>(false);
+  const [isGetAnswer, setIsGetAnswer] = useState<boolean>(false);
   const [questionCount, setQuestionCount] = useState<number>(0);
   const [isFillTextArea, setIsFillTextArea] = useState<boolean>(false);
+  const [loginUserId, setLoginUserId] = useState<number|null>();
   const answerRef = useRef<HTMLTextAreaElement | null>(null);
   let generateQuestionLock : boolean = false;
+  const programmingLangs: { [key : string] : string } = {
+    'Java' : 'java',
+    'C言語' : 'c',
+    'C++' : 'c++',
+    'JavaScript' : 'javascript',
+    'Python' : 'python',
+    'Go' : 'go',
+    'C#' : 'cs',
+    'Ruby' : 'rb',
+    'SQL' : 'sql',
+    'PHP' : 'php',
+    'ShellScript' : 'sh',
+  };
+  const findKeyByValue = (obj: Object, e: string) => {
+    return Object.keys(programmingLangs).find(key => programmingLangs[key] === e);
+  }
 
   const initStatus = () => {
     setIsSendAnswer(false);
     setQuestion(null);
     setTof(null);
+    setReason(null);
     setComments([]);
+    setIsGetAnswer(false);
     generateQuestionLock = false;
   }
 
   const generateQuestion = async() => {
     await apiClient.post("/gemini/generateQuestion", {
-      pl:programmingLang
+      pl:findKeyByValue(programmingLangs, programmingLang)
     }).then((responce: any) => {
       console.log(responce.data.returnData.question);
       console.log(responce.data.returnData.modelAnswer);
@@ -45,23 +67,49 @@ const InteractiveQandA = () => {
     e.preventDefault();
     if (isSendAnswer === false) {
       setIsSendAnswer(true);  // 2回目のsubmitを無効化する
-      const answer = answerRef.current !== null ? answerRef.current?.value : "";
-      if (answer !== "") {
+      setAnswer(answerRef.current !== null ? answerRef.current?.value : "");
+      console.log("answer set.");
+    }
+  };
+
+  useEffect(() => {
+
+    console.log("answer is : " + answer);
+    const answerCheck = async() => {
+      if (answer !== "" && answer !== null && isGetAnswer === false) {
         await apiClient.post("gemini/answerCheck", {
           question,
           answer,
           modelAnswer,
-          pl: programmingLang
-        }).then((responce:any) => {
-          setTof(responce.data.returnData.tof);
-          const resComments = Object.keys(responce.data.returnData).map((key :string) => responce.data.returnData[key]);  // 複数あるコメントを任意の数記録
+          pl:findKeyByValue(programmingLangs, programmingLang)
+        }).then((response:any) => {
+          setTof(response.data.returnData.tof);
+          setReason(response.data.returnData.reasons);
+          const resComments = Object.keys(response.data.returnData).filter((key: string) => key.startsWith("comment")).map((key :string) => response.data.returnData[key]);  // 複数あるコメントを任意の数記録
           setComments(resComments);
+          setIsGetAnswer(true);
         })
       }
     }
-  };
+    answerCheck();
+    
+  }, [answer])
 
-  const handleReload = () => {
+  const handleReload = async() => {
+    if (loginUserId !== null) {
+      await apiClient.post("db/QandARegister", {
+        question,
+        answer,
+        modelAnswer,
+        tof,
+        reasons: reason,
+        comment: comments.slice(1).join('\n'),
+        lang: programmingLang,
+        userId: loginUserId
+       }).then((response:any) => {
+        console.log(response);
+       });
+    }
     initStatus();
     const now = questionCount;
     setQuestionCount(now + 1);
@@ -87,6 +135,8 @@ const InteractiveQandA = () => {
     }
 
     loadPlFromLocalStorage();
+    const userId = Number(localStorage.getItem('loginUserId'));
+    setLoginUserId(userId);
   }, []);
 
   useEffect(() => {
@@ -139,12 +189,13 @@ const InteractiveQandA = () => {
           )}
           </div>
           <div className="DescBody">
-          {tof !== null && comments[0] !== "" && (
+          {isGetAnswer === true && tof !== null && (
             <div className="Description">
-              <p>{tof === 'Y' ? "正解" : "不正解"}</p>
+              <p><b>{tof === 'Apple' ? "正解" : "不正解"}</b></p>
+              {reason !== null && reason !== '' && (<ReactMarkdown className="bg-red-100 border-red-400 text-red-700 border rounded-md p-4 mb-4">{reason}</ReactMarkdown>)}
               {comments.map((comment, index) => (
                 <React.Fragment key={index}>
-                {comment !== 'Y' && comment !== 'Great' ? 
+                {comment !== 'Apple' && comment !== 'Grape' && comment !== 'Orange' ? 
                   (comment.split("```").map((sentence, i) => (
                     <React.Fragment key={i}>
                     {i % 2 === 0 ? 
@@ -165,7 +216,7 @@ const InteractiveQandA = () => {
               <Button className="BackButton" variant="outlined" color="warning" onClick={handleBackPage}>もどる</Button>
             </NextLink>
           </div>
-          {tof !== null && comments[0] !== "" && (
+          {tof !== null && (
             <div className="">
               <Button className="NextButton" variant="contained" color="success" onClick={handleReload}>次の問題</Button>
             </div>

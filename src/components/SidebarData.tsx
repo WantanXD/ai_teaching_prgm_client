@@ -11,6 +11,6 @@ export const SidebarData = [
     {
         title: "ログ",
         icon: <StorageRoundedIcon />,
-        link: "/log"
+        link: "/Log"
     }
 ]

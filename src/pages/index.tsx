@@ -16,7 +16,15 @@ export default function Home() {
   const programmingLangs: { [key : string] : string } = {
     'Java' : 'java',
     'C言語' : 'c',
-    'JavaScript' : 'javascript'
+    'C++' : 'c++',
+    'JavaScript' : 'javascript',
+    'Python' : 'python',
+    'Go' : 'go',
+    'C#' : 'cs',
+    'Ruby' : 'rb',
+    'SQL' : 'sql',
+    'PHP' : 'php',
+    'ShellScript' : 'sh',
   };
   const [selectedLang, setSelectedLang] = useState<string>(programmingLangs['Java']);
 
@@ -26,6 +34,8 @@ export default function Home() {
       setSelectedLang(storedLang !== null ? storedLang : selectedLang);
     }
     console.log(selectedLang);
+    localStorage.setItem('loginUser', 'wantun');
+    localStorage.setItem('loginUserId', '29');
   }, [])
 
   const handleSelectLang = (e:SelectChangeEvent<string>) => {

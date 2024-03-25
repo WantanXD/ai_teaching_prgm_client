@@ -3,6 +3,7 @@
 @import './MyBody.css';
 @import './StartButton.css';
 @import './QandA.css';
+@import 'Log.css';
 
 @tailwind base;
 @tailwind components;
