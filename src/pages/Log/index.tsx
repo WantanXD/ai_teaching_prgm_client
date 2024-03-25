@@ -80,7 +80,7 @@ function Log() {
   const [loginUserId, setLoginUserId] = useState<number|null>();
   const [circleGraphData, setCircleGraphData] = useState(initCircleGraphData);
   const [barGraphData, setBarGraphData] = useState(initBarGraphData);
-  const [historyData, setHistoryData] = useState(null);
+  const [historyData, setHistoryData] = useState<Object[]>([]);
   const [langPercentage, setLangPercentage] = useState<number>(-1);
 
   let langRate:any = null;
@@ -107,14 +107,37 @@ function Log() {
     return colorPalette[colorIndex];
   }
 
+  const removeCharacters = (e:string): string => {
+    e = e.replace(/^"|"$/g, '');
+    const invalidChars = ['*', '問', '題', ':', '：', '\n', ' '];
+    let startIndex = 0;
+    for (let i = 0; i < e.length; i++) {
+        if (!invalidChars.includes(e[i])) {
+            startIndex = i;
+            break;
+        }
+    }
+    e = e.replace(/\"([^\"]*)\"/g, '$1');
+    return e.slice(startIndex);
+  }
+
   const cvrtLangName = (e:any) => {
     const cvrtLangData = e.map((item:any) => {
       const langName = Object.keys(programmingLangs).find((key:string) => programmingLangs[key] === item.lang);
-      return {
-        _count: item._count,
-        lang: langName || item.lang,
+      if ('_count' in item) {
+        return {
+          _count: item._count,
+          lang: langName || item.lang,
+        }
+      }
+      else {
+        return {
+          ...item,
+          lang: langName || item.lang,
+        }
       }
     });
+    console.log(cvrtLangData);
     return cvrtLangData;
   };
 
@@ -140,8 +163,11 @@ function Log() {
     await apiClient.post('db/getHistory', {
       userId: loginUserId,
       limit: 5,
-    }).then((responce:any) => {
-      setHistoryData(cvrtLangName(responce.data.returnData));
+    }).then((response:any) => {
+      response.data.returnData.map((item:any) => {
+        item.question = removeCharacters(item.question);
+      });
+      setHistoryData(cvrtLangName(response.data.returnData));
     });
   }
 
@@ -317,13 +343,27 @@ function Log() {
                       <div className='LogSubTitle'>
                         履歴
                       </div>
-                      {historyData !== null && (
-                        <div className='LogHistoryData'>
-                          {
-
-                          }
-                        </div>
-                      )}
+                      <div className='LogHistoryData'>
+                        {Array.isArray(historyData) && historyData.length !== 0 && (
+                          historyData.map((row, index) => {
+                            return(
+                              <React.Fragment key={index}>
+                                <div className='LogHistory'>
+                                  <section className='tof'>
+                                    {row.tof === true ? '🟢 ✔':'🟡❌'}
+                                  </section>
+                                  <section className='lang'>
+                                    <b>{row.lang}</b>
+                                  </section>
+                                  <section className='ques'>
+                                    {row.question}
+                                  </section>
+                                </div>
+                              </React.Fragment>
+                            );
+                          })
+                        )}
+                      </div>
                     </React.Fragment>
                   )}
                 </div>

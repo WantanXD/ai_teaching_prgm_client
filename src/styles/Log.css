@@ -126,3 +126,28 @@
   border: 2px solid #2980b9;
   display: flex;
 }
+.LogHistoryData {
+  position: relative;
+  padding: 20px;
+  margin-top: 80px;
+}
+.LogHistory {
+  padding: 3px;
+  display: grid;
+  grid-template-columns: 5fr 12fr 83fr;
+  gap: 10px;
+}
+.LogHistory .lang {
+  position: relative;
+  align-items: center;
+}
+.LogHistory .ques {
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.LogHistory .tof {
+  position: relative;
+  align-items: center;
+}
