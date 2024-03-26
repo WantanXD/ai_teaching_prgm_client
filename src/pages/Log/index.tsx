@@ -5,6 +5,7 @@ import { Pie, Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js'
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
+import { authCheck } from '@/utils/authCheck';
 import { apiClient } from '@/lib/apiClient';
 
 const initCircleGraphData = {
@@ -75,9 +76,8 @@ Chart.register(
 
 function Log() {
 
-  const [loginStat, setLoginStat] = useState<boolean>(false);
-  const [loginUser, setLoginUser] = useState<String|null>();
-  const [loginUserId, setLoginUserId] = useState<number|null>();
+  const [loginUserName, setLoginUserName] = useState<String|null>(null);
+  const [loginUserId, setLoginUserId] = useState<number|null>(null);
   const [circleGraphData, setCircleGraphData] = useState(initCircleGraphData);
   const [barGraphData, setBarGraphData] = useState(initBarGraphData);
   const [historyData, setHistoryData] = useState<Object[]>([]);
@@ -176,16 +176,15 @@ function Log() {
   }, [langPercentage])
 
   useEffect(() => {
-    const getLoginStatus = () => {
-      const nowLoginStat = localStorage.getItem('loginUser') !== null ? true : false;
-      setLoginStat(nowLoginStat);
-      if (nowLoginStat === true) {
-        setLoginUser(localStorage.getItem('loginUser'));
-        setLoginUserId(Number(localStorage.getItem('loginUserId')));
+    const getLoginStatus = async() => {
+      const response = await authCheck();
+      if (Object.keys(response).length !== 0) {
+        setLoginUserName(response.data.user.name);
+        setLoginUserId(Number(response.data.user.id));
       }
+      console.log(response);
     }
     getLoginStatus();
-    console.log(loginStat);
   }, []);
 
   useEffect(() => {
@@ -254,7 +253,7 @@ function Log() {
         <Sidebar/>
         <div className='MyBody'>
           {
-            loginStat === false ? 
+            loginUserName === null ? 
               <NextLink href='../Authenticate' passHref>
                 <Button className='LoginSuggestButton' variant='contained' size='medium'>
                   ログイン・ユーザ登録
@@ -263,16 +262,16 @@ function Log() {
             :
             <div className='LogBody'>
               <div className='LogTitle'>
-                {loginUser !== null && loginUser !== '' && (
+                {loginUserName !== null && loginUserName !== '' && (
                     <React.Fragment>
-                      {loginUser}さんのデータ
+                      {loginUserName}さんのデータ
                     </React.Fragment>
                   )
                 }
               </div>
               <div className='LogLangBody-Corner'>
                 <div className='LogLangBody'>
-                  {loginUser !== null && loginUser !== '' && (
+                  {loginUserName !== null && loginUserName !== '' && (
                     <React.Fragment>
                       <div className='LogSubTitle'>
                         解答数比較
@@ -320,7 +319,7 @@ function Log() {
               </div>
               <div className='LogTofBody-Corner'>
                 <div className='LogTofBody'>
-                  {loginUser !== null && loginUser !== '' && (
+                  {loginUserName !== null && loginUserName !== '' && (
                     <React.Fragment>
                       <div className='LogSubTitle'>
                         正答率比較
@@ -338,7 +337,7 @@ function Log() {
               </div>
               <div className='logDataBody-Corner'>
                 <div className='logDataBody'>
-                  {loginUser !== null && loginUser !== '' && (
+                  {loginUserName !== null && loginUserName !== '' && (
                     <React.Fragment>
                       <div className='LogSubTitle'>
                         履歴

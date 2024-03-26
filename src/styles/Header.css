@@ -8,7 +8,16 @@
   align-items: center;  
 }
 
-.loginButton {
+.accountInfo{
+  display: flex;
+  align-items: center;
   margin-left: auto;
   margin-right: 20px;
+}
+.loginUser {
+  display: flex;
+  margin-right: 20px;
+}
+.loginButton {
+  display: flex;
 }

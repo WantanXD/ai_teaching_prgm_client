@@ -25,7 +25,6 @@ function Authenticate() {
       email, 
       pass:password,
     }).then(async(response:any)=>{
-      console.log(response);
       localStorage.setItem('jwtToken', response.data.jwtToken);
       const res = await apiClient.post('/jwt/tokenVerification', {
         jwtToken: localStorage.getItem('jwtToken'),
@@ -42,8 +41,10 @@ function Authenticate() {
       email, 
       pass:password,
     }).then((response:any)=>{
-      console.log(response);
-      setLoginUser(response.data.user.name);
+      if (response.data.success === true) {
+        setLoginUser(response.data.user.name);
+        localStorage.setItem('jwtToken', response.data.jwtToken);
+      }
     })
   }
 
