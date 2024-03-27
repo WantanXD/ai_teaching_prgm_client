@@ -27,15 +27,24 @@ function Header() {
   return (
     <div>
       <header className="Header bg-green-200">
-        <div className='loginButton'>
           {loginUserName === null ?
-            <NextLink href="/Authenticate" passHref>
-              <Button variant='outlined' color='inherit'>ログイン</Button>
-            </NextLink>
+            <div className='loginItems'>
+              <div className='loginButton'>
+                <NextLink href="/Authenticate" passHref>
+                  <Button variant='outlined' color='inherit'>ログイン</Button>
+                </NextLink>
+              </div>
+            </div>
           :
-            <Button variant='outlined' color='inherit' onClick={userLogout}>ログアウト</Button>
+            <div className='loginItems'>
+              <div className='loginName'>
+                ログイン中：{loginUserName}
+              </div>
+              <div className='loginButton'>
+                <Button variant='outlined' color='inherit' onClick={userLogout}>ログアウト</Button>
+              </div>
+            </div>
           }
-        </div>
       </header>
     </div>
   )

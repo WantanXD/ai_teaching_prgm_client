@@ -44,6 +44,7 @@ function Authenticate() {
     }).then((response:any)=>{
       if (response.data.success === true) {
         setLoginUser(response.data.user.name);
+        localStorage.setItem('jwtToken', response.data.jwtToken);
       }
     })
   }
