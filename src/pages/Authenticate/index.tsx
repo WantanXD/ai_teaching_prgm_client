@@ -42,8 +42,9 @@ function Authenticate() {
       email, 
       pass:password,
     }).then((response:any)=>{
-      console.log(response);
-      setLoginUser(response.data.user.name);
+      if (response.data.success === true) {
+        setLoginUser(response.data.user.name);
+      }
     })
   }
 

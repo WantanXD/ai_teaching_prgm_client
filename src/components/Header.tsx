@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import NextLink from "next/link";
 import { Button } from '@mui/material';
 import { apiClient } from '@/lib/apiClient';
+import { authCheck } from '@/utils/authCheck';
 
 function Header() {
 
@@ -9,15 +10,9 @@ function Header() {
 
   useEffect(() => {
     const init = async() => {
-      const jwtToken = localStorage.getItem('jwtToken');
-      if (jwtToken) {
-        await apiClient.post('/jwt/tokenVerification', {
-          jwtToken,
-        }).then((response:any)=> {
-          if (response.data.isAuthenticated === true) {
-            setLoginUserName(response.data.user.name);
-          }
-        });
+      const response = await authCheck();
+      if (Object.keys(response).length !== 0/* && response.data.isAuthenticated === true*/) {
+        setLoginUserName(response.data.user.name);
       }
     }
     init();
