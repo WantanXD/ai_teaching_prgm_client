@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import CodeBlock from '@/components/CodeBlock';
 import NextLink from "next/link";
+import { authCheck } from '@/utils/authCheck';
 
 const InteractiveQandA = () => {
 
@@ -106,9 +107,7 @@ const InteractiveQandA = () => {
         comment: comments.slice(1).join('\n'),
         lang: programmingLang,
         userId: loginUserId
-       }).then((response:any) => {
-        console.log(response);
-       });
+       }).then((response:any) => {});
     }
     initStatus();
     const now = questionCount;
@@ -133,12 +132,13 @@ const InteractiveQandA = () => {
 
       setProgrammingLang(newProgrammingLang);
 
-      await authCheck()
+      const response = await authCheck();
+      if (response.data.isAuthenticated === true) {
+        setLoginUserId(Number(response.data.user.id));
+      }
     }
 
     loadPlFromLocalStorage();
-    const userId = Number(localStorage.getItem('loginUserId'));
-    setLoginUserId(userId);
   }, []);
 
   useEffect(() => {

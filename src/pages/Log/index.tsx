@@ -178,7 +178,7 @@ function Log() {
   useEffect(() => {
     const getLoginStatus = async() => {
       const response = await authCheck();
-      if (Object.keys(response).length !== 0 && response.data.isAuthenticated === true) {
+      if (response.data.isAuthenticated === true) {
         setLoginUserName(response.data.user.name);
         setLoginUserId(Number(response.data.user.id));
       }

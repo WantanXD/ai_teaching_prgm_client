@@ -12,5 +12,9 @@ export async function authCheck(): Promise<Object> {
     }
     return response;
   }
-  return {};
+  return {
+    data: {
+      isAuthenticated: false,  
+    }
+  };
 }
