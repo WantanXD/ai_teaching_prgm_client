@@ -121,7 +121,7 @@ const InteractiveQandA = () => {
 
   useEffect(() => {
 
-    const loadPlFromLocalStorage = () => {
+    const loadPlFromLocalStorage = async() => {
 
       let newProgrammingLang;
       if (localStorage.getItem('pl') === null) {
@@ -132,6 +132,8 @@ const InteractiveQandA = () => {
       }
 
       setProgrammingLang(newProgrammingLang);
+
+      await authCheck()
     }
 
     loadPlFromLocalStorage();
