@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import NextLink from "next/link";
+import ReactMarkdown from 'react-markdown';
 import { Button } from '@mui/material/';
 import { Pie, Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js'
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import CustomLink from '@/components/CustomLink';
+import CodeBlock from '@/components/CodeBlock';
+import { questionObj } from '@/utils/myObjects';
 import { apiClient } from '@/lib/apiClient';
 import { authCheck } from '@/utils/authCheck';
 
@@ -81,10 +84,10 @@ function Log() {
   const [loginUserId, setLoginUserId] = useState<number|null>(null);
   const [circleGraphData, setCircleGraphData] = useState(initCircleGraphData);
   const [barGraphData, setBarGraphData] = useState(initBarGraphData);
-  const [historyData, setHistoryData] = useState<Object[]>([]);
+  const [historyData, setHistoryData] = useState<questionObj[]>([]);
   const [langPercentage, setLangPercentage] = useState<number>(-1);
   const [isViewHistoryDetails, setIsViewHistoryDetails] = useState<boolean>(false);
-  const [questionLog, setQuestionLog] = useState<Object|null>(null);
+  const [questionLog, setQuestionLog] = useState<questionObj|null>(null);
 
   let langRate:any = null;
   let trueRate:any = null;
@@ -166,7 +169,7 @@ function Log() {
       userId: loginUserId,
       limit: 100,
     }).then((response:any) => {
-      response.data.returnData.map((item:any) => {
+      response.data.returnData.map((item:questionObj) => {
         item.question = removeCharacters(item.question);
       });
       setHistoryData(cvrtLangName(response.data.returnData));
@@ -183,7 +186,7 @@ function Log() {
     setQuestionLog(null);
   }
 
-  const changeViewQuestionLog = (questionData:Object|null) => {
+  const changeViewQuestionLog = (questionData:questionObj|null) => {
     setIsViewHistoryDetails(true);
     setQuestionLog(questionData);
   }
@@ -396,12 +399,66 @@ function Log() {
                         <div className='LogSubTitle'>
                           解答履歴
                         </div>
-                        <div className='logHistoryDetailsData'>
-                          あ
+                        <div className='questionLog-ui'>
+                          <div className='questionLog-Tof'>
+                            {questionLog.tof === true ? 
+                              <div className='tofRect'>
+                                <div className='correct'>正解した問題</div>
+                              </div>
+                            :
+                              <div className='tofRect'>
+                                <div className='incorrect'>不正解だった問題</div>
+                              </div>
+                            }
+                            <hr />
+                          </div>
+                          <Button className='backButton' variant='outlined' size='medium' onClick={() => changeViewQuestionLog(null)}>
+                            全ての問題履歴を見る
+                          </Button>
                         </div>
-                        <Button variant='outlined' size='medium' onClick={() => changeViewQuestionLog(null)}>
-                          全ての問題履歴を見る
-                        </Button>
+                        <div className='questionLog'>
+                          <div className='question'>
+                            <p><b>問題：</b></p>
+                            {questionLog.question.split('```').map((sentence:string, index:number) => (
+                              <React.Fragment key={index}>
+                              {index % 2 === 0 ? 
+                                <ReactMarkdown className="">{sentence}</ReactMarkdown>
+                              :
+                                <CodeBlock className={"language-" + programmingLangs[questionLog.lang]} children={sentence.substring(sentence.indexOf('\n')+1)}/>
+                              }
+                              </React.Fragment>
+                            ))}
+                          </div><br />
+                          <div className='answer'>
+                            <p><b>あなたの解答：</b></p>
+                            <CodeBlock className={"language-" + programmingLangs[questionLog.lang]} children={questionLog.answer}/>
+                          </div><br />
+                          {questionLog.reasons !== undefined && questionLog.reasons !== null && questionLog.reasons.length !== 0 && (
+                            <div className='reason'>
+                              <ReactMarkdown className="bg-red-100 border-red-400 text-red-700 border rounded-md p-4 mb-4">
+                                {questionLog.reasons}
+                              </ReactMarkdown>
+                              <br/>
+                            </div>
+                          )}
+                          {questionLog.modelAns !== undefined && questionLog.modelAns !== null && questionLog.modelAns.length !== 0 && (
+                            <div className='model-answer'>
+                              <ReactMarkdown>{questionLog.modelAns}</ReactMarkdown>
+                              <br/>
+                            </div>
+                          )}
+                          <div className='comment'>
+                            {questionLog.comment.split('```').map((sentence:string, index:number) => (
+                              <React.Fragment key={index}>
+                              {index % 2 === 0 ? 
+                                <ReactMarkdown className="">{sentence}</ReactMarkdown>
+                              :
+                                <CodeBlock className={"language-" + programmingLangs[questionLog.lang]} children={sentence.substring(sentence.indexOf('\n')+1)}/>
+                              }
+                              </React.Fragment>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     </div>  
                   :

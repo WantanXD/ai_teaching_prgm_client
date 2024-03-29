@@ -33,7 +33,6 @@ export default function Home() {
       const storedLang = localStorage.getItem('pl');
       setSelectedLang(storedLang !== null ? storedLang : selectedLang);
     }
-    console.log(selectedLang);
     localStorage.setItem('loginUser', 'wantun');
     localStorage.setItem('loginUserId', '29');
   }, [])
@@ -44,7 +43,6 @@ export default function Home() {
 
   useEffect(() => {
     localStorage.setItem('pl', selectedLang);
-    console.log(selectedLang);
   }, [selectedLang]);
 
   return (

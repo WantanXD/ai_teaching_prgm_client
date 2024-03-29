@@ -96,19 +96,25 @@ const InteractiveQandA = () => {
     
   }, [answer])
 
-  const handleReload = async() => {
-    if (loginUserId !== null) {
-      await apiClient.post("db/QandARegister", {
-        question,
-        answer,
-        modelAnswer,
-        tof,
-        reasons: reason,
-        comment: comments.slice(1).join('\n'),
-        lang: programmingLang,
-        userId: loginUserId
-       }).then((response:any) => {});
+  useEffect(() => {
+    const registQuestion = async() => {
+      if (loginUserId !== null && tof !== null) {
+        await apiClient.post("db/QandARegister", {
+          question,
+          answer,
+          modelAnswer,
+          tof,
+          reasons: reason,
+          comment: comments.slice(1).join('\n'),
+          lang: programmingLang,
+          userId: loginUserId
+         }).then((response:any) => {});
+      }
     }
+    registQuestion();
+  }, [tof])
+
+  const handleReload = async() => {
     initStatus();
     const now = questionCount;
     setQuestionCount(now + 1);
@@ -155,6 +161,41 @@ const InteractiveQandA = () => {
   const changeWord = () => {
     setIsFillTextArea(answerRef.current !== null && answerRef.current?.value !== "" ? true : false);
   }
+
+  // https://qiita.com/laineus/items/12a220d2ab086931232d
+  // を参考にさせて頂きました
+  const TAB_STR = '  ';
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    const target = e.target as HTMLTextAreaElement;
+    if (target.tagName !== 'TEXTAREA' || e.key !== 'Tab') {
+      return false;
+    }
+    e.preventDefault();
+    const slct = { 
+      left: target.selectionStart, 
+      right: target.selectionEnd 
+    };
+    const lineStart = target.value.substring(0, slct.left).split('\n').length - 1;
+    const lineEnd = target.value.substring(0, slct.right).split('\n').length - 1;
+    const lines = target.value.split('\n');
+    for (const i in lines) {
+      if (parseInt(i) < lineStart || parseInt(i) > lineEnd || lines[i] === '') continue;
+      if (!e.shiftKey) {
+        // 行頭にタブ挿入
+        lines[i] = TAB_STR + lines[i];
+        slct.left += parseInt(i) == lineStart ? TAB_STR.length : 0;
+        slct.right += TAB_STR.length;
+      } else if (lines[i].substring(0, TAB_STR.length) === TAB_STR) {
+        // 行頭のタブ削除
+        lines[i] = lines[i].substring(TAB_STR.length);
+        slct.left -= parseInt(i) == lineStart ? TAB_STR.length : 0;
+        slct.right -= TAB_STR.length;
+      }
+    }
+    target.value = lines.join('\n');
+    target.setSelectionRange(slct.left, slct.right);
+    return false;
+  });
 
   return (
     <div className='interactiveQandA h-screen'>
