@@ -4,6 +4,7 @@
 @import './StartButton.css';
 @import './QandA.css';
 @import 'Log.css';
+@import 'CustomLink.css';
 
 @tailwind base;
 @tailwind components;

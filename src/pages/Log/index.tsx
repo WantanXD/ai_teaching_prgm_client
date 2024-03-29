@@ -5,6 +5,7 @@ import { Pie, Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js'
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
+import CustomLink from '@/components/CustomLink';
 import { apiClient } from '@/lib/apiClient';
 import { authCheck } from '@/utils/authCheck';
 
@@ -82,6 +83,8 @@ function Log() {
   const [barGraphData, setBarGraphData] = useState(initBarGraphData);
   const [historyData, setHistoryData] = useState<Object[]>([]);
   const [langPercentage, setLangPercentage] = useState<number>(-1);
+  const [isViewHistoryDetails, setIsViewHistoryDetails] = useState<boolean>(false);
+  const [questionLog, setQuestionLog] = useState<Object|null>(null);
 
   let langRate:any = null;
   let trueRate:any = null;
@@ -137,7 +140,6 @@ function Log() {
         }
       }
     });
-    console.log(cvrtLangData);
     return cvrtLangData;
   };
 
@@ -162,7 +164,7 @@ function Log() {
   const makeHistoryData = async() => {
     await apiClient.post('db/getHistory', {
       userId: loginUserId,
-      limit: 5,
+      limit: 100,
     }).then((response:any) => {
       response.data.returnData.map((item:any) => {
         item.question = removeCharacters(item.question);
@@ -171,8 +173,23 @@ function Log() {
     });
   }
 
+  const changeViewHistoryDetails = () => {
+    if (isViewHistoryDetails === false) {
+      setIsViewHistoryDetails(true);
+    }
+    else {
+      setIsViewHistoryDetails(false);
+    }
+    setQuestionLog(null);
+  }
+
+  const changeViewQuestionLog = (questionData:Object|null) => {
+    setIsViewHistoryDetails(true);
+    setQuestionLog(questionData);
+  }
+
   useEffect(() => {
-    console.log(langPercentage);
+    //console.log(langPercentage);
   }, [langPercentage])
 
   useEffect(() => {
@@ -198,8 +215,8 @@ function Log() {
         const othersTotalValue = sortedLangsArray.slice(5).reduce((acc, [, value]) => acc + (value || 0), 0);
         const labels = sortedLangsArray.slice(0, 5).map(([key]) => key);
         setLangPercentage(Object.values(sortedLangsArray).reduce((acc, [, value]) => acc + value, 0));
-        console.log(sortedLangsArray);
-        console.log(othersTotalValue);
+        //console.log(sortedLangsArray);
+        //console.log(othersTotalValue);
         setCircleGraphData({
           labels: sortedLangsArray.length > 5 ? labels.concat(['others']) : labels,
           datasets: [
@@ -254,7 +271,7 @@ function Log() {
           {
             loginUserId === null ? 
               <NextLink href='../Authenticate' passHref>
-                <Button className='LoginSuggestButton' variant='contained' size='medium'>
+                <Button className='LoginSuggestButton' variant='outlined' size='medium'>
                   ログイン・ユーザ登録
                 </Button>
               </NextLink>
@@ -338,12 +355,12 @@ function Log() {
                 <div className='logDataBody'>
                   {loginUserName !== null && loginUserName !== '' && (
                     <React.Fragment>
-                      <div className='LogSubTitle'>
+                      <div className='LogSubTitle' onClick={changeViewHistoryDetails}>
                         履歴
                       </div>
                       <div className='LogHistoryData'>
                         {Array.isArray(historyData) && historyData.length !== 0 && (
-                          historyData.map((row, index) => {
+                          historyData.slice(0, 5).map((row, index) => {
                             return(
                               <React.Fragment key={index}>
                                 <div className='LogHistory'>
@@ -354,7 +371,9 @@ function Log() {
                                     <b>{row.lang}</b>
                                   </section>
                                   <section className='ques'>
-                                    {row.question}
+                                    <CustomLink href='' onClick={() => changeViewQuestionLog(row)} preventDefault>
+                                      {row.question}
+                                    </CustomLink>
                                   </section>
                                 </div>
                               </React.Fragment>
@@ -366,6 +385,59 @@ function Log() {
                   )}
                 </div>
               </div>
+              {isViewHistoryDetails === true && (
+                <React.Fragment>
+                  <div className='logCover' onClick={changeViewHistoryDetails}>
+                   
+                  </div>
+                  {questionLog !== null ?
+                    <div className='historyDetails-Corner'>
+                      <div className='historyDetails'>
+                        <div className='LogSubTitle'>
+                          解答履歴
+                        </div>
+                        <div className='logHistoryDetailsData'>
+                          あ
+                        </div>
+                        <Button variant='outlined' size='medium' onClick={() => changeViewQuestionLog(null)}>
+                          全ての問題履歴を見る
+                        </Button>
+                      </div>
+                    </div>  
+                  :
+                    <div className='historyDetails-Corner'>
+                      <div className='historyDetails'>
+                        <div className='LogSubTitle'>
+                          詳細履歴
+                        </div>
+                        <div className='logHistoryDetailsData'>
+                          {Array.isArray(historyData) && historyData.length !== 0 && (
+                            historyData.map((row, index) => {
+                              return(
+                                <React.Fragment key={index}>
+                                  <div className='LogHistory'>
+                                    <section className='tof'>
+                                      {row.tof === true ? '🟢 ✔':'🟡❌'}
+                                    </section>
+                                    <section className='lang'>
+                                      <b>{row.lang}</b>
+                                    </section>
+                                    <section className='ques'>
+                                      <CustomLink href='' onClick={() => changeViewQuestionLog(row)} preventDefault>
+                                        {row.question}
+                                      </CustomLink>
+                                    </section>
+                                  </div>
+                                </React.Fragment>
+                              );
+                            })
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </React.Fragment>              
+              )}
             </div>
           }
         </div>
