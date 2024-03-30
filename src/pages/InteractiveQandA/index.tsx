@@ -162,40 +162,46 @@ const InteractiveQandA = () => {
     setIsFillTextArea(answerRef.current !== null && answerRef.current?.value !== "" ? true : false);
   }
 
-  // https://qiita.com/laineus/items/12a220d2ab086931232d
-  // を参考にさせて頂きました
-  const TAB_STR = '  ';
-  document.addEventListener('keydown', (e: KeyboardEvent) => {
-    const target = e.target as HTMLTextAreaElement;
-    if (target.tagName !== 'TEXTAREA' || e.key !== 'Tab') {
-      return false;
-    }
-    e.preventDefault();
-    const slct = { 
-      left: target.selectionStart, 
-      right: target.selectionEnd 
-    };
-    const lineStart = target.value.substring(0, slct.left).split('\n').length - 1;
-    const lineEnd = target.value.substring(0, slct.right).split('\n').length - 1;
-    const lines = target.value.split('\n');
-    for (const i in lines) {
-      if (parseInt(i) < lineStart || parseInt(i) > lineEnd || lines[i] === '') continue;
-      if (!e.shiftKey) {
-        // 行頭にタブ挿入
-        lines[i] = TAB_STR + lines[i];
-        slct.left += parseInt(i) == lineStart ? TAB_STR.length : 0;
-        slct.right += TAB_STR.length;
-      } else if (lines[i].substring(0, TAB_STR.length) === TAB_STR) {
-        // 行頭のタブ削除
-        lines[i] = lines[i].substring(TAB_STR.length);
-        slct.left -= parseInt(i) == lineStart ? TAB_STR.length : 0;
-        slct.right -= TAB_STR.length;
+  useEffect(() => {
+    // https://qiita.com/laineus/items/12a220d2ab086931232d
+    // を参考にさせて頂きました
+    const TAB_STR = '  ';
+    const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLTextAreaElement;
+      if (target.tagName !== 'TEXTAREA' || e.key !== 'Tab') {
+        return false;
       }
+      e.preventDefault();
+      const slct = { 
+        left: target.selectionStart, 
+        right: target.selectionEnd 
+      };
+      const lineStart = target.value.substring(0, slct.left).split('\n').length - 1;
+      const lineEnd = target.value.substring(0, slct.right).split('\n').length - 1;
+      const lines = target.value.split('\n');
+      for (const i in lines) {
+        if (parseInt(i) < lineStart || parseInt(i) > lineEnd || lines[i] === '') continue;
+        if (!e.shiftKey) {
+          // 行頭にタブ挿入
+          lines[i] = TAB_STR + lines[i];
+          slct.left += parseInt(i) == lineStart ? TAB_STR.length : 0;
+          slct.right += TAB_STR.length;
+        } else if (lines[i].substring(0, TAB_STR.length) === TAB_STR) {
+          // 行頭のタブ削除
+          lines[i] = lines[i].substring(TAB_STR.length);
+          slct.left -= parseInt(i) == lineStart ? TAB_STR.length : 0;
+          slct.right -= TAB_STR.length;
+        }
+      }
+      target.value = lines.join('\n');
+      target.setSelectionRange(slct.left, slct.right);
+      return false;
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
     }
-    target.value = lines.join('\n');
-    target.setSelectionRange(slct.left, slct.right);
-    return false;
-  });
+  }, []);
 
   return (
     <div className='interactiveQandA h-screen'>
