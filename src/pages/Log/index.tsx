@@ -443,7 +443,15 @@ function Log() {
                           )}
                           {questionLog.modelAns !== undefined && questionLog.modelAns !== null && questionLog.modelAns.length !== 0 && (
                             <div className='model-answer'>
-                              <ReactMarkdown>{questionLog.modelAns}</ReactMarkdown>
+                              {questionLog.modelAns.split('```').map((sentence:string, index:number) => (
+                                <React.Fragment key={index}>
+                                {index % 2 === 0 ? 
+                                  <ReactMarkdown className="">{sentence}</ReactMarkdown>
+                                :
+                                  <CodeBlock className={"language-" + programmingLangs[questionLog.lang]} children={sentence.substring(sentence.indexOf('\n')+1)}/>
+                                }
+                                </React.Fragment>
+                              ))}
                               <br/>
                             </div>
                           )}
