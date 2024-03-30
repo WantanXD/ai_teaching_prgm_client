@@ -140,7 +140,7 @@ const InteractiveQandA = () => {
 
       const response = await authCheck();
       if (response.data.isAuthenticated === true) {
-        setLoginUserId(Number(response.data.user.id));
+        setLoginUserId(response.data.user ? Number(response.data.user.id) : null);
       }
     }
 
