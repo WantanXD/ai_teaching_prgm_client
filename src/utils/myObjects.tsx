@@ -10,3 +10,14 @@ export type questionObj = {
   lang: string,
   userId: number
 }
+
+export type authObj = {
+  data: {
+    isAuthenticated: boolean,
+    jwtToken?: string,
+    user?:{
+      name: string,
+      id: number,
+    },
+  },
+}

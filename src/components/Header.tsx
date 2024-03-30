@@ -12,7 +12,7 @@ function Header() {
     const init = async() => {
       const response = await authCheck();
       if (response.data.isAuthenticated === true) {
-        setLoginUserName(response.data.user.name);
+        setLoginUserName(response.data.user ? response.data.user.name : null);
       }
     }
     init();

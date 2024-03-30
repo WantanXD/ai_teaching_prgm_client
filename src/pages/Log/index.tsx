@@ -8,7 +8,7 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import CustomLink from '@/components/CustomLink';
 import CodeBlock from '@/components/CodeBlock';
-import { questionObj } from '@/utils/myObjects';
+import { questionObj, authObj } from '@/utils/myObjects';
 import { apiClient } from '@/lib/apiClient';
 import { authCheck } from '@/utils/authCheck';
 
@@ -44,8 +44,8 @@ const initBarGraphData = {
     }
   ],
 }
-const initBarGraphOptions = {
-  indexAxis: 'y',
+const initBarGraphOptions: any = {
+  indexAxis: "y",
   maintainAspectRatio: false,
   scales: {
     x: {
@@ -199,8 +199,8 @@ function Log() {
     const getLoginStatus = async() => {
       const response = await authCheck();
       if (response.data.isAuthenticated === true) {
-        setLoginUserName(response.data.user.name);
-        setLoginUserId(Number(response.data.user.id));
+        setLoginUserName(response.data.user ? response.data.user.name : null);
+        setLoginUserId(response.data.user ? Number(response.data.user.id) : null);
       }
     }
     getLoginStatus();
